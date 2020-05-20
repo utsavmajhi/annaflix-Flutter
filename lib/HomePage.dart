@@ -38,8 +38,11 @@ class _HomePageState extends State<HomePage> {
                             Container(
                                 height: 50,
                                 width: 50,
-                                child: Image(
-                                  image: AssetImage("lib/assets/netflix.png"),
+                                child: CircleAvatar(
+                                  child: Image(
+                                    image: AssetImage("lib/assets/annaflixalphalogof.png"),
+                                    height:38,
+                                  ),
                                 )
                             ),
                             FlatButton(
@@ -101,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                makePopularWidget("Popular on Netflix"),
+                makePopularWidget("Popular on AnnaFlix"),
                 makePopularWidget("Trending Now"),
                 makeContinueWatching("Continue Watching for Kalle"),
                 bannerMovie(),

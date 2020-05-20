@@ -5,6 +5,7 @@ import 'package:annaflix/HomePage.dart';
 import 'package:annaflix/PrimePage.dart';
 import 'package:annaflix/LoginPage.dart';
 
+
 void main() => runApp(AnnaFlix());
 
 class AnnaFlix extends StatelessWidget {
@@ -15,7 +16,7 @@ class AnnaFlix extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.black,
       ),
-      initialRoute:WelcomePage.id,
+      initialRoute:LoginPage.id,
       routes: {
         WelcomePage.id:(context) => WelcomePage(),
         LoginPage.id:(context) => LoginPage(),

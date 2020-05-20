@@ -2,6 +2,7 @@ import 'package:annaflix/LoginPage.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:annaflix/HomePage.dart';
+import 'package:google_fonts/google_fonts.dart';
 class LoginPage extends StatefulWidget {
   static String id='LoginPage';
   @override
@@ -33,9 +34,48 @@ class _WelcomePageState extends State<LoginPage> with SingleTickerProviderStateM
   }
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child:Image.asset('lib/assets/annaflixlogo.png'),
+    return Scaffold(
+     // backgroundColor: Colors.black54,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Ohayo!',
+            style: GoogleFonts.bebasNeue(
+                  fontSize: 32,
+              color: Colors.redAccent,
+            ),
+          ),
 
+          TextField(
+            keyboardType: TextInputType.emailAddress,
+
+            textAlign: TextAlign.center,
+            onChanged: (value)
+            {
+                  //get the email id
+            },
+            decoration: InputDecoration(
+              hintText: 'Email Address',
+                hintStyle:TextStyle(
+                  color:Colors.blueGrey,
+                ),
+              contentPadding:
+              EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blueAccent, width: 1.0),
+                borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              ),
+            ),
+
+          ),
+
+        ],
+      ),
     );
   }
 }
