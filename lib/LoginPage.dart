@@ -5,7 +5,7 @@ import 'package:annaflix/HomePage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:annaflix/constants.dart';
 import 'package:annaflix/rounded_button.dart';
-
+import 'package:animated_text_kit/animated_text_kit.dart';
 class LoginPage extends StatefulWidget {
   static String id='LoginPage';
 
