@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:annaflix/HomePage.dart';
 import 'package:annaflix/PrimePage.dart';
 import 'package:annaflix/LoginPage.dart';
-
+import 'package:annaflix/Registration.dart';
 
 void main() => runApp(AnnaFlix());
 
@@ -22,6 +22,7 @@ class AnnaFlix extends StatelessWidget {
         LoginPage.id:(context) => LoginPage(),
         PrimePage.id:(context) => PrimePage(),
         HomePage.id:(context) => HomePage(),
+        Registration.id:(context) => Registration(),
 
 
       },
