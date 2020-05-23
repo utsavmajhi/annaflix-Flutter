@@ -19,11 +19,25 @@ class LoginPage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<LoginPage> with TickerProviderStateMixin {
-
+  GlobalKey<ScaffoldState> _scaffoldKey= new GlobalKey<ScaffoldState>();
   final _auth=FirebaseAuth.instance;
   String email;
   String password;
 
+  //snackbar initialises
+  _showSnackBar(@required String message) {
+    if(_scaffoldKey!=null)
+      {
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+            backgroundColor: Colors.red[800],
+            content: new Text(message),
+            duration: new Duration(seconds: 4),
+          ),
+        );
+      }
+
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -34,6 +48,7 @@ class _WelcomePageState extends State<LoginPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.black54,
       body: Stack(
         children: <Widget>[
@@ -128,24 +143,37 @@ class _WelcomePageState extends State<LoginPage> with TickerProviderStateMixin {
               RoundedButton(title:'Log In',colour: Colors.white38,onPressed:()async{
                 //backend starts for checking login credentials
                 setState(() {
-                  final spinkit = SpinKitSquareCircle(
-                    color: Colors.white,
-                    size: 50.0,
-                    controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
-                  );
-                });
 
-                try {
-                  final user = await _auth.signInWithEmailAndPassword(
-                      email: email.trim(), password: password);
-                  if (user != null) {
-                    Navigator.pushNamed(context,PrimePage.id);
+                });
+                if(email.isEmpty||password.isEmpty||!email.contains('@'))
+                  {
+                    _showSnackBar('Wrong format or Empty Fields');
                   }
+                else{
+                  if(password.length<6)
+                    {
+                      _showSnackBar('Length of Password should be minimum 6 characters long');
+                    }
+                  else
+                    {
+                      try {
+                        final user = await _auth.signInWithEmailAndPassword(
+                            email: email.trim(), password: password);
+                        if (user != null) {
+                          Navigator.pushNamed(context,PrimePage.id);
+                        }
+                      }
+                      catch(e)
+                      {
+                        print(e);
+                        _showSnackBar(e.toString());
+
+                        /*Scaffold.of(context).showSnackBar(snackBar);*/
+                      }
+                    }
+
                 }
-                catch(e)
-                {
-                  print(e);
-                }
+
               } ),
             ],
           ),
@@ -162,7 +190,7 @@ class _WelcomePageState extends State<LoginPage> with TickerProviderStateMixin {
                         'Don\'t have an account?',
                         style: TextStyle(
                           color:Colors.white,
-                          fontSize: 16,
+                          fontSize: 15,
                         ),
                       ),
                       SizedBox(
@@ -177,6 +205,7 @@ class _WelcomePageState extends State<LoginPage> with TickerProviderStateMixin {
                           style: TextStyle(
                             color: Colors.redAccent,
                             fontSize: 16,
+                            fontWeight: FontWeight.w600
 
                           ),
                         ),

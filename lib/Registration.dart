@@ -9,7 +9,11 @@ import 'package:annaflix/rounded_button.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+final _firestore=Firestore.instance;
+FirebaseUser loggedInUser;
 class Registration extends StatefulWidget {
   static String id='Registration';
   @override
@@ -17,14 +21,55 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> with TickerProviderStateMixin{
+  GlobalKey<ScaffoldState> _scaffoldKey= new GlobalKey<ScaffoldState>();
   final _auth=FirebaseAuth.instance;
   String email;
   String password;
+  String username;
 
+  _showSnackBar(@required String message) {
+    _scaffoldKey.currentState.showSnackBar(
+      new SnackBar(
+        backgroundColor: Colors.red[800],
+        content: new Text(message),
+        duration: new Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void getCurrentUser () async{
+    try {
+      final user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+        try {
+          _firestore.collection("Users").document('${loggedInUser.uid}').setData({
+            'username':username,
+            'email':email,
+            'profileimage': 'default',
+            'watchedvideos' : 'default',
+          });
+        }
+        catch (e) {
+              print(e);
+        }
+      }
+    }
+    catch(e)
+    {
+
+      print(e);
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+
+      ),
       backgroundColor: Colors.black54,
       body: Center(
         child: SingleChildScrollView(
@@ -49,12 +94,11 @@ class _RegistrationState extends State<Registration> with TickerProviderStateMix
                       padding: EdgeInsets.only(left: 10,right: 10),
                       child: TextField(
                         cursorColor: Color(0xFF6B6B6B),
-                        keyboardType: TextInputType.emailAddress,
                         textAlign: TextAlign.start,
                         onChanged: (value)
                         {
                           //get the email id
-                          email=value;
+                          username=value;
                         },
                         style: TextStyle(
                             color: Colors.white54
@@ -111,29 +155,10 @@ class _RegistrationState extends State<Registration> with TickerProviderStateMix
 
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15
-                            ),
-                          ),
                           SizedBox(
                             width: 3,
                           ),
-                          GestureDetector(
-                            onTap: (){
-                              //if clicked on recover password
 
-                            },
-                            child: Text(
-                              'Recover here',
-                              style: TextStyle(
-                                color: Colors.redAccent,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -145,19 +170,35 @@ class _RegistrationState extends State<Registration> with TickerProviderStateMix
                       setState(() {
 
                       });
-
-                      try {
-                        final user = await _auth.createUserWithEmailAndPassword(email: email.trim(), password: password);
-                        if (user != null) {
-                          final FirebaseUser user = await _auth.currentUser();
-                          print("utsav"+ user.uid);
-                          Navigator.pushNamed(context,PrimePage.id);
-                        }
-                      }
-                      catch(e)
+                      if(username.isEmpty||email.isEmpty||password.isEmpty||!email.contains('@')||username==null||password==null)
                       {
-                        print(e);
+                        _showSnackBar('Empty Fields or Bad Email format');
                       }
+                      else
+                        {
+                          if(password.length<6)
+                          {
+                            _showSnackBar('Length of Password should be minimum 6 characters long');
+                          }
+                          else
+                            {
+                              try {
+                                final user = await _auth.createUserWithEmailAndPassword(email: email.trim(), password: password);
+                                if (user != null) {
+                                  final FirebaseUser user = await _auth.currentUser();
+                                  /*print("utsav"+ user.uid);*/
+                                  getCurrentUser();
+                                  Navigator.pushNamed(context,PrimePage.id);
+                                }
+                              }
+                              catch(e)
+                              {
+                                _showSnackBar(e.toString().trim());
+                                print(e);
+                              }
+                            }
+                        }
+
                     } ),
                   ],
                 ),
