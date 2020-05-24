@@ -26,6 +26,10 @@ class _RegistrationState extends State<Registration> with TickerProviderStateMix
   String email;
   String password;
   String username;
+  AnimationController controller;
+  Animation animation;
+
+  Animation<Color> _colorTween;
 
   _showSnackBar(@required String message) {
     _scaffoldKey.currentState.showSnackBar(
@@ -36,7 +40,20 @@ class _RegistrationState extends State<Registration> with TickerProviderStateMix
       ),
     );
   }
-
+ @override
+  void initState() {
+    // TODO: implement initState
+   controller=AnimationController(
+     duration: Duration(seconds: 5),
+     vsync: this,
+   );
+     _colorTween=controller.drive(ColorTween(
+     begin: Colors.yellow,
+     end:Colors.blue,
+   ));
+   controller.repeat();
+    super.initState();
+  }
   void getCurrentUser () async{
     try {
       final user = await _auth.currentUser();
@@ -173,6 +190,7 @@ class _RegistrationState extends State<Registration> with TickerProviderStateMix
                       if(username.isEmpty||email.isEmpty||password.isEmpty||!email.contains('@')||username==null||password==null)
                       {
                         _showSnackBar('Empty Fields or Bad Email format');
+
                       }
                       else
                         {
@@ -200,6 +218,7 @@ class _RegistrationState extends State<Registration> with TickerProviderStateMix
                         }
 
                     } ),
+
                   ],
                 ),
               ),
